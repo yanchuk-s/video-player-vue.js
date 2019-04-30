@@ -4,18 +4,17 @@
       <div class="video-wrp">
          <video id="videoplayer">
           <!-- <source src="https://www.videvo.net/videvo_files/converted/2018_04/preview/180301_06_A_CityRoam_03.mp420186.webm"> -->
-          <source src="https://www.videvo.net/videvo_files/converted/2016_04/preview/Audio_bands_Feed.mov25390.webm">
+          <!-- <source src="https://www.videvo.net/videvo_files/converted/2016_04/preview/Audio_bands_Feed.mov25390.webm"> -->
+          <source src="../assets/video/advertising720.mp4">
         </video>
-        <!-- <transition name="fade">
-           <div v-if="inPause" class="video-hover if-play">
+        <transition name="fade">
+           <div v-if="playwrp" class="video-hover if-play">
             <button @click="play"><i class="fas fa-play"></i></button>
           </div>
-        </transition>
-        <transition name="fade">
-          <div v-if="playing" class="video-hover if-pause">
+          <div v-else class="video-hover video-hover-pause if-pause">
             <button @click="pause"><i class="fas fa-pause"></i></button>
           </div>
-        </transition> -->
+        </transition>
       </div>
       <div class="bar-container">
         <div class="progres-general">
@@ -26,8 +25,8 @@
         </div>
          <div class="player-nav">
            <div class="nav-left">
-            <button class="nav-btn" @click="play"><i class="fas fa-play"></i></button>
-            <button class="nav-btn" @click="pause"><i class="fas fa-pause"></i></button>
+            <button v-if="inPause" class="nav-btn" @click="play"><i class="fas fa-play"></i></button>
+            <button v-else class="nav-btn" @click="pause"><i class="fas fa-pause"></i></button>
             <div class="progres-volume">
                 <button v-if="muteValue == false" @click="mute"><i class="fas fa-volume-up"></i></button>
                 <button v-else @click="mute"><i class="fas fa-volume-mute"></i></button>
@@ -63,7 +62,9 @@ export default {
         w: null
       },
       muteValue: false,
-      volumeSave: 1
+      volumeSave: 1,
+      playwrp: true,
+      document: null
     }
   },
   mounted(){
@@ -78,8 +79,26 @@ export default {
     this.player.addEventListener("canplay",function(){
       _this.canplay()
     });
+
+    window.addEventListener("keydown", function (event) {
+      // console.log(event)
+      _this.spaceEvent(event)
+    });
+
+    // console.log(window)
+
   },
   methods: {
+    spaceEvent: function (e) {
+      if(e.keyCode == 32){
+        console.log('SPACE')
+        if(this.inPause == true){
+          this.play()
+        }else{
+          this.pause()
+        }
+      }
+    },
     canplay: function () {
       this.duration = this.player.duration.toFixed(1)
       this.player.value = 1
@@ -131,11 +150,13 @@ export default {
       this.player.play()
       this.inPause = false
       this.playing = true
+      this.playwrp = false
     },
     pause: function () {
       this.player.pause()
       this.inPause = true
       this.playing = false
+      this.playwrp = true
     },
     openFullscreen: function () {
       let elem = document.documentElement;
@@ -207,7 +228,7 @@ export default {
     }
     .video-hover{
       position: absolute;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       top: 0;
@@ -228,8 +249,11 @@ export default {
         }
       }
     }
+    .video-hover-pause{
+      display: none;
+    }
     &:hover{
-      .video-hover{
+      .video-hover-pause{
         display: flex;
       }
     }
