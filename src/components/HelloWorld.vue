@@ -27,6 +27,7 @@
            <div class="nav-left">
             <button v-if="inPause" class="nav-btn" @click="play"><i class="fas fa-play"></i></button>
             <button v-else class="nav-btn" @click="pause"><i class="fas fa-pause"></i></button>
+            <button @click="backward" class="nav-btn"><i class="fas fa-step-backward"></i></button>
             <div class="progres-volume">
                 <button v-if="muteValue == false" @click="mute"><i class="fas fa-volume-up"></i></button>
                 <button v-else @click="mute"><i class="fas fa-volume-mute"></i></button>
@@ -79,25 +80,31 @@ export default {
     this.player.addEventListener("canplay",function(){
       _this.canplay()
     });
+    
+    this.player.addEventListener("ended",function(){
+      _this.ended()
+    });
 
     window.addEventListener("keydown", function (event) {
       // console.log(event)
       _this.spaceEvent(event)
     });
-
-    // console.log(window)
-
   },
   methods: {
     spaceEvent: function (e) {
       if(e.keyCode == 32){
-        console.log('SPACE')
         if(this.inPause == true){
           this.play()
         }else{
           this.pause()
         }
       }
+    },
+    ended: function () {
+      this.progres.value = 0
+      this.player.currentTime = 0
+      this.playwrp = true
+      this.inPause = true
     },
     canplay: function () {
       this.duration = this.player.duration.toFixed(1)
@@ -124,6 +131,10 @@ export default {
       this.player.currentTime = this.player.duration* (o/w)
       this.play()
       this.progres2.value = 0
+    },
+    backward: function(){
+      this.progres.value = 0
+      this.player.currentTime = 0
     },
     volume: function (e) {
         let w = e.target.offsetWidth
