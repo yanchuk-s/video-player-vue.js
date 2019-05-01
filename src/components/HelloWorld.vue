@@ -9,11 +9,15 @@
         </video>
         <transition name="fade">
            <div v-if="playwrp" class="video-hover if-play">
-            <button @click="play"><i class="fas fa-play"></i></button>
+            <div>
+              <button @click="play"><i class="fas fa-play"></i></button>
+            </div>
           </div>
-          <div v-else class="video-hover video-hover-pause if-pause">
-            <button @click="pause"><i class="fas fa-pause"></i></button>
-          </div>
+          <!-- <div v-else class="video-hover video-hover-pause if-pause">
+            <div>
+              <button @click="pause"><i class="fas fa-pause"></i></button>
+            </div>
+          </div> -->
         </transition>
       </div>
       <div class="bar-container">
@@ -210,7 +214,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 15px;
-  background: #111111;
+  background: rgba(1,1,1,0.7);
   box-sizing: border-box;
   .nav-left{
     display: flex;
@@ -262,6 +266,7 @@ export default {
     }
     .video-hover-pause{
       display: none;
+      background: none;
     }
     &:hover{
       .video-hover-pause{
@@ -275,23 +280,27 @@ export default {
   position: absolute;
   bottom: 0;
   width: 100%;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   margin-top: -5px;
+  opacity: 0;
   div{
     width: 100%;
   }
-}
-
-.player{
   &:hover{
-    .bar-container{
-      display: flex;
-    }
+    opacity: 1;
   }
 }
+
+// .player{
+//   &:hover{
+//     .bar-container{
+//       display: flex;
+//     }
+//   }
+// }
 
 .progres-general{
   progress {
@@ -359,6 +368,7 @@ progress::-webkit-progress-value {
 .progres-volume{
   display: flex;
   align-items: center;
+  width: 100px!important;
   button{
     background: none;
     color: #fff;
@@ -398,5 +408,10 @@ progress::-webkit-progress-value {
 .fullscreen{
   height: 100%;
   width: 100%;
+  .video-wrp{
+    height: 100vh;
+    background: #000;
+    display: flex;
+  }
 }
 </style>
