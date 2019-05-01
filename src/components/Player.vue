@@ -1,11 +1,13 @@
 <template>
   <div class="hello">
    <div class="player" v-bind:class="{ fullscreen: ifFullScreen }">
+     <adv />
       <div class="video-wrp">
          <video id="videoplayer">
           <!-- <source src="https://www.videvo.net/videvo_files/converted/2018_04/preview/180301_06_A_CityRoam_03.mp420186.webm"> -->
           <!-- <source src="https://www.videvo.net/videvo_files/converted/2016_04/preview/Audio_bands_Feed.mov25390.webm"> -->
           <source src="../assets/video/advertising720.mp4">
+           <!-- <source src="../assets/video/brat2.mp4"> -->
         </video>
         <transition name="fade">
            <div v-if="playwrp" class="video-hover if-play">
@@ -40,7 +42,8 @@
            </div>
            <div class="nav-right">
              <span>{{currentTime}}/{{duration}}</span>
-             <button class="nav-btn" @click="openFullscreen"><i class="fas fa-expand"></i></button>
+             <button v-if="ifFullScreen" class="nav-btn" @click="closeFullscreen"><i class="fas fa-compress-arrows-alt"></i></button>
+             <button v-else class="nav-btn" @click="openFullscreen"><i class="fas fa-expand"></i></button>
            </div>
         </div>
       </div>
@@ -49,8 +52,12 @@
 </template>
 
 <script>
+import adv from '../components/Adv.vue'
 export default {
-  name: 'HelloWorld',
+  name: 'Player',
+  components: {
+    adv
+  },
   data(){
     return{
       player: null,
@@ -97,12 +104,16 @@ export default {
   methods: {
     spaceEvent: function (e) {
       if(e.keyCode == 32){
-        if(this.inPause == true){
-          this.play()
-        }else{
-          this.pause()
-        }
+        // if(this.inPause == true){
+        //   this.play()
+        // }else{
+        //   this.pause()
+        // }
       }
+       if (e.keyCode == 27) {
+          this.closeFullscreen()
+          // this.closeFullscreen()
+        }
     },
     ended: function () {
       this.progres.value = 0
@@ -185,6 +196,20 @@ export default {
         elem.msRequestFullscreen();
       }
       this.ifFullScreen = true
+    },
+    closeFullscreen: function () {
+      // console.log('closeFullscreen')
+      this.ifFullScreen = false
+      let elem = document.documentElement;
+      if (elem.exitFullscreen) {
+        elem.exitFullscreen();
+      } else if (elem.mozCancelFullScreen) { /* Firefox */
+        elem.mozCancelFullScreen();
+      } else if (elem.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitExitFullscreen();
+      } else if (elem.msExitFullscreen) { /* IE/Edge */
+        elem.msExitFullscreen();
+      }
     }
   }
 }
@@ -413,5 +438,11 @@ progress::-webkit-progress-value {
     background: #000;
     display: flex;
   }
+}
+
+video[poster]{
+height:100%;
+width:100%;
+object-fit: cover;
 }
 </style>
