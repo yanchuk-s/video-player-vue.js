@@ -48,6 +48,26 @@
         </div>
       </div>
    </div>
+   <div class="video-info">
+     <div class="title">
+       {{video.title}}
+     </div>
+     <div class="video-info-second">
+       <div class="video-views">
+         {{video.views}} views
+       </div>
+       <div class="video-likes-dislikes">
+         <div class="like">
+           {{video.likes}}
+           <button @click="like(video.id)" class="like-btn"><i class="fas fa-thumbs-up"></i></button>
+         </div>
+         <div class="dislikes">
+           {{video.dislikes}}
+          <button @click="dislike(video.id)" class="like-btn"><i class="fas fa-thumbs-down"></i></button>
+         </div>
+       </div>
+     </div>
+   </div>
   </div>
 </template>
 
@@ -60,6 +80,7 @@ export default {
   },
   data(){
     return{
+      video: null,
       player: null,
       progres: null,
       progres2: null,
@@ -77,6 +98,22 @@ export default {
       volumeSave: 1,
       playwrp: true,
       document: null
+    }
+  },
+  beforeCreate(){
+    // if(JSON.parse(localStorage.getItem('videos')) != null){
+    //   this.$store.state.videos = localStorage.getItem('videos')
+    // }
+  },
+  created(){
+    this.video = this.$store.getters.getVideoById(1)
+    this.view(this.video.id)
+    // console.log(this.video)
+    // console.log(this.video)
+  },
+  computed:{
+    chengeVideo(){
+      return this.video = this.$store.getters.getVideoById(1)
     }
   },
   mounted(){
@@ -210,6 +247,18 @@ export default {
       } else if (elem.msExitFullscreen) { /* IE/Edge */
         elem.msExitFullscreen();
       }
+       this.ifFullScreen = false
+    },
+    like: function (id) {
+      // console.log(id)
+      this.$store.dispatch('like', id)
+    },
+    dislike: function (id) {
+      this.$store.dispatch('dislike', id)
+    },
+    view: function (id) {
+      // console.log(id)
+      this.$store.dispatch('view', id)
     }
   }
 }
@@ -257,7 +306,7 @@ export default {
 }
 
 .player{
-  width: 500px;
+  width: 100%;
   height: auto;
   position: relative;
   .video-wrp{
@@ -444,5 +493,37 @@ video[poster]{
 height:100%;
 width:100%;
 object-fit: cover;
+}
+
+.video-info{
+  padding: 10px 0;
+  .title{
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  .video-info-second{
+    display: flex;
+    justify-content: space-between;
+    .video-views{
+      color: #606060;
+    }
+    .video-likes-dislikes{
+      display: flex;
+      color: #606060;
+      div{
+        display: flex;
+        align-items: center;
+        margin-left: 20px;
+      }
+      .like-btn{
+        font-size: 16px;
+        cursor: pointer;
+        color: #606060;
+        background: none;
+        border: none;
+        outline: none;
+      }
+    }
+  }
 }
 </style>
